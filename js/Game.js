@@ -40,7 +40,7 @@ class Game {
             button.classList.remove('wrong');
         });//will remove selected buttons from previous game upon starting new game
         
-        const hearts = document.querySelectorAll('.tries');
+        const hearts = document.querySelectorAll('.tries img');
         hearts.forEach(heart => {
             heart.src = 'images/liveHeart.png';
         });//will apply the live heart img to each heart upon starting new game
