@@ -8,80 +8,72 @@ class Game {
 
     constructor() {
         this.missed = 0;
-        this.phrases = ["Make it happen", "You are your home", "Mindset is everything", "Believe you can and you're halfway there", "Progress not perfection"];
+        this.phrases = ["Make it happen", "You are your home", "Mindset is everything", "Believe you can and youre halfway there", "Progress not perfection"];
         this.activePhrase = null;
     }
 
     getRandomPhrase() {
         //for (let i = 0; i < this.phrases.length; i++) 
-            const randomPhrase = Math.floor(Math.random() * this.phrases.length);
-            return new Phrase(this.phrases[randomPhrase]);//[randomPhrase] return a random chosen phrase from this.phrases
+            const randomIndex = Math.floor(Math.random() * this.phrases.length);
+            return new Phrase(this.phrases[randomIndex]);//[randomPhrase] return a random chosen phrase from this.phrases
             
             //let activePhr = this.activePhrase;
             //this.activePhrase = new Phrase();
         }
 
     startGame() {
-        const hideStartScreen = document.querySelector('#overlay');
-        hideStartScreen.style.display = 'none';
-        hideStartScreen.classList.remove('show');
-        hideStartScreen.classList.add('hide'); //none
+        
+        const startScreen = document.getElementById('overlay');
+        startScreen.style.display = 'none';//hide overlay
+        //hideStartScreen.classList.remove('show');
+       //hideStartScreen.classList.add('hide'); //none
 
         this.activePhrase = this.getRandomPhrase();//calls the getRandomPhrase() method
         this.activePhrase.addPhraseToDisplay();
 
 
-        const keyboard = document.querySelectorAll(".key");
-            keyboard.forEach(key => {
-                key.addEventListener('click', (e) => {
-                    const letter = e.target.textContent;
-                    this.handleInteraction(letter);
-            });
-        });
+
     }
 
-    handleInteraction(character) {
-        const disableLetter = document.querySelectorAll(".key");
-
-            disableLetter.forEach(button => { // for each letter button 
-                if (button.textContent === character){ //if it matches the phrase letters
-                button.disabled = true; //will disable
-                button.classList.add('chosen');//and add the chosen css class
-                }
-        });
-                if(this.activePhrase.checkLetter(character)) { //active phrase checks for if character exists in phrase
-                    this.activePhrase.showMatchedLetter(character);//show matched letters
+    handleInteraction(letter) {
+        const buttons = document.querySelectorAll('.key');
+        for (let i = 0; i < buttons.length; i++) { //loop through keys
+            if (buttons[i].textContent === letter) {  //check if matches index 
+                const button = buttons[i]; 
+                button.classList.add('chosen'); //if chosen will change to chosen css color
+                button.disabled = true;//disable button
+                
+                if (this.activePhrase.checkLetter(letter)) {
+                    this.activePhrase.showMatchedLetter(letter); 
+                    if (this.checkForWin()) {
+                        this.gameOver(true); // Call gameOver with win status
+                    } 
+                   } else { // If the letter is not in the phrase, remove a life
+                    button.classList.add('wrong');  //will turn orange
+                   this.removeLife(); // Check if the game is over (out of lives) 
+                   if (this.missed >= 5) { 
+                   this.gameOver(false); // Call gameOver with loss status if greater than or equal to 5
+                } 
     
-                    this.checkForWin(); //checks if game is won
-                } else {
-                    this.removeLife(); //if not, removes a heart/life
-                }
-        disableLetter.forEach(button => {  //for
-                if (button.textContent === character){
-                button.classList.add('wrong'); //adds CSS class for incorrect guesses
-                button.disabled = true; //disables a clicked button
-                }
-        });
-    }
+            } 
+            //break; // Exit the loop after processing the button
+     } 
+   } 
+}
+                              
 
     checkForWin() {
-        const letters = document.querySelectorAll('.key');//.letter??
-        let allRevealed = true; 
-
-        letters.forEach(letter => {
-            if (!letter.classList.contains('show')) { //contains() or === contains method exists for DOM elements and checks whether a node is a descendant of another node.
-                allRevealed = false;
-            }
-        });
-        if (allRevealed) {
-            this.gameOver(true);
+        const hiddenLetters = document.querySelectorAll('.letter');//.letter??
+        const revealedLetters = document.querySelectorAll('.show');
+            return hiddenLetters.length === revealedLetters.length;
         }
-    }
+
+        
 
     removeLife() {
         //const scoreboard = document.getElementById("scoreboard");
-        const hearts = document.querySelectorAll('.tries');// maybe add img
-        //hearts[this.missed].src = "images/lostHeart.png";
+        const hearts = document.querySelectorAll('.tries img');// maybe add img
+        hearts[this.missed].src = "images/lostHeart.png";
         this.missed +=1 ;
             //const lostHeart = document.querySelectorAll('.tries').src="lostHeart.png";
             //let lostHeart = document.createElement('img');
@@ -91,36 +83,32 @@ class Game {
                 //src.appendChild(lostHeart);
         
             //for (let i = 0; i < hearts.length; i++){
-                if (this.missed >= hearts.length){
-                    hearts.style.display = 'hide';
-                    hearts.parentNode.appendChild(lostHeart) = 'show';
-                    this.missed = 5;
-                    this.gameOver(true);
-                    //break;
-                }
-    
-            this.checkForWin();
-       // }
+                //if (this.missed === 5) {
+                    //this.gameOver(false);
+                //}
+            //this.checkForWin();
     }
 
     gameOver(gameWon) {
-        const showStartScreen = document.querySelector('#overlay h1');
-        //const message = document.querySelector
+        const startScreen = document.getElementById('overlay');//start page
+        startScreen.style.display = 'flex';
 
-        if (this.checkForWin()) { //checks if won, if true:
-            //showStartScreen.classList.remove('hide'); //
-            //showStartScreen.classList.add('show');
-            showStartScreen.style.display = 'win';
+        const message = document.getElementById('game-over-message');
+        if (gameWon) { //checks if won, if true:
             message.textContent = 'Congrats, you won!';//winning message
+            startScreen.className = 'win';
         } else {
-            //showStartScreen.classList.remove('hide');
-            //showStartScreen.classList.add('show');
-            showStartScreen.style.display = 'lose';
             message.textContent = 'Sorry, you lost :('; //losing message 
+            startScreen.className = 'lose';
+            //showStartScreen.classList.remove('hide');
+            //showStartScreen.classList.add('show');        
         }
         //this.activePhrase = this.getRandomPhrase();
         //this.activePhrase.addPhraseToDisplay();
         //showStartScreen.classList.add('show');
         
     }
+
 }
+
+

@@ -20,7 +20,7 @@ class Phrase {
         //li.textContent = text;
 
        if (character !== ' ') {
-        li.className = 'letter';//hide?? //add css class for letters
+        li.className = 'letter hide';//hide?? //add css class for letters
         li.textContent = character; //set charac inside li
     } else {
         li.className = 'space';
@@ -31,36 +31,21 @@ class Phrase {
 }
 
     checkLetter(letter) { //maybe no character parameter?
-
-        for (let i = 0; i < this.phrase.length; i++){
-            if (this.phrase[i].includes(letter)) {
-                return true;
-            } else {
-                return false;
-            }
-            
-        }
-    
-        if (this.phrase.includes(letter)) { //this.phrase.includes(character)?? //this.phrase === character
-            return true;
-        } else {
-            return false;
-        }
-        
+        return this.phrase.includes(letter); 
     }
 
 
     showMatchedLetter(letter) { //maybe no character parameter? 
         const letters = document.querySelectorAll('.letter');//.letter?
-        letters.forEach(letter => { 
-            if (letter.textContent === letter) { //compares text content w guessed letter
-              letter.classList.remove('hide');   //remove hide      
-              letter.classList.add('show')       //adds show    
+        letters.forEach((li) => { 
+            if (li.textContent === letter) { //compares text content w guessed letter
+                li.classList.remove('hide');   //remove hide and show matched letter
+                li.classList.add('show')       //adds show lass 
             }
         });
     }
 
-};
+}
 
 
 
