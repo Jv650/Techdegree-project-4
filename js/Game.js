@@ -8,14 +8,20 @@ class Game {
 
     constructor() {
         this.missed = 0;
-        this.phrases = ["Make it happen", "You are your home", "Mindset is everything", "Believe you can and youre halfway there", "Progress not perfection"];
+        this.phrases = [
+            new Phrase("Make it happen"),    
+            new Phrase("You are your home"), 
+            new Phrase("Mindset is everything"), 
+            new Phrase("Believe you can and youre halfway there"), 
+            new Phrase("Progress not perfection"),
+        ];
         this.activePhrase = null;
     }
 
     getRandomPhrase() {
         //for (let i = 0; i < this.phrases.length; i++) 
             const randomIndex = Math.floor(Math.random() * this.phrases.length);
-            return new Phrase(this.phrases[randomIndex]);//[randomPhrase] return a random chosen phrase from this.phrases
+            return this.phrases[randomIndex];//[randomPhrase] return a random chosen phrase from this.phrases
             
             //let activePhr = this.activePhrase;
             //this.activePhrase = new Phrase();
@@ -25,18 +31,28 @@ class Game {
         
         const startScreen = document.getElementById('overlay');
         startScreen.style.display = 'none';//hide overlay
-        //hideStartScreen.classList.remove('show');
-       //hideStartScreen.classList.add('hide'); //none
+        
+
+        const buttons = document.querySelectorAll('.key');
+        buttons.forEach(button => {
+            button.disabled = false;
+            button.classList.remove('chosen');
+            button.classList.remove('wrong');
+        });//will remove selected buttons from previous game upon starting new game
+        
+        const hearts = document.querySelectorAll('.tries');
+        hearts.forEach(heart => {
+            heart.src = 'images/liveHeart.png';
+        });//will apply the live heart img to each heart upon starting new game
 
         this.activePhrase = this.getRandomPhrase();//calls the getRandomPhrase() method
-        this.activePhrase.addPhraseToDisplay();
-
-
+        this.activePhrase.addPhraseToDisplay();//displays
 
     }
 
     handleInteraction(letter) {
         const buttons = document.querySelectorAll('.key');
+
         for (let i = 0; i < buttons.length; i++) { //loop through keys
             if (buttons[i].textContent === letter) {  //check if matches index 
                 const button = buttons[i]; 
